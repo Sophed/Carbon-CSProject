@@ -20,7 +20,10 @@ from tkinter import messagebox
 
 
 # === TODO ===
-# - Storing data for customers
+# - GUI For Storing Business  Details
+# - Functionality For Storing Business  Details
+# - GUI For Checking Customer Details
+# - Search Customer Details (use card number and provide name, valid from and valid to + list of buissness available)
 
 
 def presenceCheck(args):
@@ -39,8 +42,8 @@ def init():
 
                   # Back Button Functionality
                   def backMain():
-                      Lwindow.destroy() # Destroy the previous window.
-                      mainMenu()
+                        Lwindow.destroy() # Destroy the previous window.
+                        mainMenu()
 
                   def adminMenu():
 
@@ -57,10 +60,11 @@ def init():
                               def saveDetails():
 
                                     # Check if there is content in the entry boxes
-                                    if presenceCheck(usernameEntry.get()) and presenceCheck(passwordEntry.get()):
+                                    if presenceCheck(nameEntry.get()) and presenceCheck(cardNumberEntry.get()) and presenceCheck(validFromEntry.get()) and presenceCheck(validToEntry.get()):
                                           
                                           with open("customerLogins.txt", mode='a') as loginDatabase: # Open the file
-                                                pass # save a combo of the entry fields
+                                                loginDatabase.write(nameEntry.get() + ";" + cardNumberEntry.get() + ";" + validFromEntry.get() + ";" + validToEntry.get() + "\n")
+                                                messagebox.showinfo("Success!", "Details Saved Successfully!")
                                                 
                                     else:
                                           # Show an error if no details are entered
@@ -225,9 +229,10 @@ def init():
                                     
                         # Back Button Functionality
                         def backLogin():
-                            Awindow.destroy() # Destroy the previous window.
-                            loginMenu()
-                      
+                              if messagebox.askokcancel("Logout", "Confirm Logout?") == True:
+                                    Awindow.destroy() # Destroy the previous window.
+                                    loginMenu()
+
                         # == Window Config == #
                         Awindow = tk.Tk()
                         Awindow.geometry('1000x600')
@@ -254,10 +259,10 @@ def init():
 
                         # == Space == #
                         AmenuText = tk.Label(
-                            Aframe,
-                            text=" ",
-                            bg="#2C363F",
-                            font=("Arial", 16)
+                              Aframe,
+                              text=" ",
+                              bg="#2C363F",
+                              font=("Arial", 16)
                         ).grid(row=1, column=0)
                               
                         # == Add Customer Button == #
@@ -273,10 +278,10 @@ def init():
                               command=addCustomerMenu,
                         ).grid(row=2, column=0)
                         
-                        # == Back Button == #
+                        # == Logout Button == #
                         exitButton = tk.Button(
                               Aframe,
-                              text="Back",
+                              text="Log Out",
                               width=24,
                               height=2,
                               bg="#E75A7C",
@@ -293,6 +298,11 @@ def init():
 
                   def login():
 
+                        
+                        #[=============================================]
+                        #[              Login Functionality            ]
+                        #[=============================================]
+
                         # Check if there is content in the entry boxes
                         if presenceCheck(usernameEntry.get()) and presenceCheck(passwordEntry.get()):
                               
@@ -308,6 +318,9 @@ def init():
                         else:
                               # Show an error if no details are entered
                               messagebox.showerror("Error", "One or more fields are empty. Please enter your login details.")
+                        
+                        #[=============================================]
+                        #[=============================================]
                   
                   try:
                         Mwindow.destroy() # Destroy the previous window.
@@ -451,10 +464,10 @@ def init():
 
             # == Space == #
             LmenuText = tk.Label(
-                Mframe,
-                text=" ",
-                bg="#2C363F",
-                font=("Arial", 16)
+                  Mframe,
+                  text=" ",
+                  bg="#2C363F",
+                  font=("Arial", 16)
             ).grid(row=1, column=0)
                   
             # == Login Button == #
