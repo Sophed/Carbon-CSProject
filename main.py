@@ -20,8 +20,8 @@ from tkinter import messagebox
 
 
 # === TODO ===
-# - GUI For Storing Business  Details
-# - Functionality For Storing Business  Details
+# [DONE] GUI For Storing Business  Details
+# [DONE] Functionality For Storing Business  Details
 # - GUI For Checking Customer Details
 # - Search Customer Details (use card number and provide name, valid from and valid to + list of buissness available)
 
@@ -77,7 +77,7 @@ def init():
                               ACwindow.geometry('1000x600')
                               ACwindow.configure(bg='#2C363F')
                               ACwindow.title("Carbon | Add Customer")
-                              ACwindow.iconbitmap('icon.ico')
+                              #ACwindow.iconbitmap('icon.ico')
 
                               # == Frame Config == #
                               ACframe = tk.Frame(
@@ -217,6 +217,117 @@ def init():
                                     borderwidth=0,
                                     command=backAdmin
                               ).grid(row=12, column=0)
+
+                        def addBusinessMenu():
+                              
+                              #[=============================================]
+                              #[              Add Business Window            ]
+                              #[=============================================]
+
+                              def backAdmin():
+                                    ABwindow.destroy() # Destroy the previous window.
+                                    adminMenu()
+
+                              def saveBDetails():
+
+                                    # Check if there is content in the entry boxes
+                                    if presenceCheck(BnameEntry.get()):
+                                          
+                                          with open("businessDetails.txt", mode='a') as nameDatabase: # Open the file
+                                                nameDatabase.write(BnameEntry.get() + "\n")
+                                                messagebox.showinfo("Success!", "Details Saved Successfully!")
+                                                
+                                    else:
+                                          # Show an error if no details are entered
+                                          messagebox.showerror("Error", "One or more fields are empty. Please fill all fields.")
+                              
+                              Awindow.destroy() # Destroy previous window
+                              
+                              # == Window Config == #
+                              ABwindow = tk.Tk()
+                              ABwindow.geometry('1000x600')
+                              ABwindow.configure(bg='#2C363F')
+                              ABwindow.title("Carbon | Add Business")
+                              #ABwindow.iconbitmap('icon.ico')
+
+                              # == Frame Config == #
+                              ABframe = tk.Frame(
+                                    ABwindow,
+                                    relief='sunken',
+                                    bg="#2C363F"
+                              )
+                              ABframe.pack(expand= True, padx= 10, pady=20)
+
+                              # == Title Text == #
+                              ABmenuText = tk.Label(
+                                    ABframe,
+                                    text="Add Business.",
+                                    fg="white",
+                                    bg="#2C363F",
+                                    font=("Arial", 25)
+                              ).grid(row=0, column=0)
+                              
+                              # == Space == #
+                              ABmenuText = tk.Label(
+                                    ABframe,
+                                    text=" ",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=1, column=0)
+                              
+                              # == Business Name Text == #
+                              BnameText = tk.Label(
+                                    ABframe,
+                                    text="Name",
+                                    fg="white",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=2, column=0)
+                              
+                              # == Business Name Entry Field == #
+                              BnameEntry = tk.Entry(
+                                    ABframe,
+                                    fg="white",
+                                    bg="#F3ADBE",
+                                    relief="flat",
+                                    font=("Arial", 16),
+                                    width=22
+                              )
+                              BnameEntry.grid(row=3, column=0)
+
+                              # == Space == #
+                              ABmenuText = tk.Label(
+                                    ABframe,
+                                    text=" ",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=4, column=0)
+                              
+                              # == Save Button == #
+                              ABsaveButton = tk.Button(
+                                    ABframe,
+                                    text="Save",
+                                    width=24,
+                                    height=2,
+                                    bg="#E75A7C",
+                                    fg="white",
+                                    font=("Arial", 14),
+                                    borderwidth=0,
+                                    command=saveBDetails
+                              ).grid(row=5, column=0)
+                              
+                              # == Back Button == #
+                              ABbackButton = tk.Button(
+                                    ABframe,
+                                    text="Back",
+                                    width=24,
+                                    height=2,
+                                    bg="#E75A7C",
+                                    fg="white",
+                                    font=("Arial", 14),
+                                    borderwidth=0,
+                                    command=backAdmin
+                              ).grid(row=6, column=0)
                         
                         #[======================================]
                         #[              Admin Window            ]
@@ -238,7 +349,7 @@ def init():
                         Awindow.geometry('1000x600')
                         Awindow.configure(bg='#2C363F')
                         Awindow.title("Carbon | Admin Menu")
-                        Awindow.iconbitmap('icon.ico')
+                        #Awindow.iconbitmap('icon.ico')
 
                         # == Frame Config == #
                         Aframe = tk.Frame(
@@ -278,6 +389,19 @@ def init():
                               command=addCustomerMenu,
                         ).grid(row=2, column=0)
                         
+                        # == Add Business Button == #
+                        loginButton = tk.Button(
+                              Aframe,
+                              text="Add Business",
+                              width=24,
+                              height=2,
+                              bg="#E75A7C",
+                              fg="white",
+                              font=("Arial", 14),
+                              borderwidth=0,
+                              command=addBusinessMenu,
+                        ).grid(row=3, column=0)
+                        
                         # == Logout Button == #
                         exitButton = tk.Button(
                               Aframe,
@@ -289,7 +413,7 @@ def init():
                               font=("Arial", 14),
                               borderwidth=0,
                               command=backLogin
-                        ).grid(row=3, column=0)
+                        ).grid(row=4, column=0)
                         
 
                   #[======================================]
@@ -332,7 +456,7 @@ def init():
                   Lwindow.geometry('1000x600')
                   Lwindow.configure(bg='#2C363F')
                   Lwindow.title("Carbon | Login")
-                  Lwindow.iconbitmap('icon.ico')
+                  #Lwindow.iconbitmap('icon.ico')
 
                   # == Frame Config == #
                   Lframe = tk.Frame(
@@ -443,7 +567,7 @@ def init():
             Mwindow.geometry('1000x600')
             Mwindow.configure(bg='#2C363F')
             Mwindow.title("Carbon | Main Menu")
-            Mwindow.iconbitmap('icon.ico')
+            #Mwindow.iconbitmap('icon.ico')
 
             # == Frame Config == #
             Mframe = tk.Frame(
