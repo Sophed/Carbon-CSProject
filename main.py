@@ -77,7 +77,7 @@ def init():
                               ACwindow.geometry('1000x600')
                               ACwindow.configure(bg='#2C363F')
                               ACwindow.title("Carbon | Add Customer")
-                              #ACwindow.iconbitmap('icon.ico')
+                              ACwindow.iconbitmap('icon.ico')
 
                               # == Frame Config == #
                               ACframe = tk.Frame(
@@ -248,7 +248,7 @@ def init():
                               ABwindow.geometry('1000x600')
                               ABwindow.configure(bg='#2C363F')
                               ABwindow.title("Carbon | Add Business")
-                              #ABwindow.iconbitmap('icon.ico')
+                              ABwindow.iconbitmap('icon.ico')
 
                               # == Frame Config == #
                               ABframe = tk.Frame(
@@ -349,7 +349,7 @@ def init():
                         Awindow.geometry('1000x600')
                         Awindow.configure(bg='#2C363F')
                         Awindow.title("Carbon | Admin Menu")
-                        #Awindow.iconbitmap('icon.ico')
+                        Awindow.iconbitmap('icon.ico')
 
                         # == Frame Config == #
                         Aframe = tk.Frame(
@@ -456,7 +456,7 @@ def init():
                   Lwindow.geometry('1000x600')
                   Lwindow.configure(bg='#2C363F')
                   Lwindow.title("Carbon | Login")
-                  #Lwindow.iconbitmap('icon.ico')
+                  Lwindow.iconbitmap('icon.ico')
 
                   # == Frame Config == #
                   Lframe = tk.Frame(
@@ -567,7 +567,7 @@ def init():
             Mwindow.geometry('1000x600')
             Mwindow.configure(bg='#2C363F')
             Mwindow.title("Carbon | Main Menu")
-            #Mwindow.iconbitmap('icon.ico')
+            Mwindow.iconbitmap('icon.ico')
 
             # == Frame Config == #
             Mframe = tk.Frame(
