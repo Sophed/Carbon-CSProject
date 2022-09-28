@@ -19,12 +19,16 @@ from tkinter import messagebox
 # Colour Palette  -  https://coolors.co/2c363f-e75a7c-f3adbe-ffffff
 
 
-# === TODO ===
-# [DONE] GUI For Storing Business  Details
-# [DONE] Functionality For Storing Business  Details
-# - GUI For Checking Customer Details
-# - Search Customer Details (use card number and provide name, valid from and valid to + list of buissness available)
+# === [ TODO ] ===
 
+# [DONE] MORE VALIDATION CHECKS ;-;
+# [DONE] GUI For Storing Business  Details
+# [DONE] ^ Functionality For Storing Business  Details
+# [DONE] GUI For Checking Customer Details
+# - ^ Functionality To List All Customer Details
+# - GUI For Searching By Card Number
+# - ^ Search Customer Details (use card number and provide name, valid from and valid to + list of buissness available)
+# [DONE] On the add customer GUI, add a button to generate the card numbers
 
 def presenceCheck(args):
       if args != "":
@@ -59,22 +63,51 @@ def init():
 
                               def saveDetails():
 
-                                    # Check if there is content in the entry boxes
-                                    if presenceCheck(nameEntry.get()) and presenceCheck(cardNumberEntry.get()) and presenceCheck(validFromEntry.get()) and presenceCheck(validToEntry.get()):
-                                          
-                                          with open("customerLogins.txt", mode='a') as loginDatabase: # Open the file
-                                                loginDatabase.write(nameEntry.get() + ";" + cardNumberEntry.get() + ";" + validFromEntry.get() + ";" + validToEntry.get() + "\n")
-                                                messagebox.showinfo("Success!", "Details Saved Successfully!")
+                                    # Check if there is content in the entry boxes and if name contains any ";"
+                                    if presenceCheck(nameEntry.get()) and presenceCheck(cardNumberEntry.get()) and presenceCheck(validFromEntry.get()) and presenceCheck(validToEntry.get() and ";" in nameEntry.get()):
+
+                                          # Check if there is "/" in the right places and that text is correct length
+                                          if (validFromEntry.get()[2] == "/" and validFromEntry.get()[5] == "/") and (validToEntry.get()[2] == "/" and validToEntry.get()[5] == "/") and len(validFromEntry.get()) == 8 and len(validToEntry.get()) == 8:
+
+                                                # Check to make sure all other characters are numbers
+                                                # If you are reading this, I am sorry.
+                                                if (validFromEntry.get()[0].isnumeric() and validFromEntry.get()[1].isnumeric() and validFromEntry.get()[3].isnumeric() and validFromEntry.get()[4].isnumeric() and validFromEntry.get()[6].isnumeric() and validFromEntry.get()[7].isnumeric()) and (validToEntry.get()[0].isnumeric() and validToEntry.get()[1].isnumeric() and validToEntry.get()[3].isnumeric() and validToEntry.get()[4].isnumeric() and validToEntry.get()[6].isnumeric() and validToEntry.get()[7].isnumeric()):
+
+                                                      # Check to make sure DD is not bigger than 31 and MM is not bigger than 12
+                                                      if (int(validFromEntry.get()[0] + validFromEntry.get()[1]) <= 31) and (int(validFromEntry.get()[3] + validFromEntry.get()[4]) <= 12) and (int(validToEntry.get()[0] + validToEntry.get()[1]) <= 31) and (int(validToEntry.get()[3] + validToEntry.get()[4]) <= 12):
+                                                            with open("customerLogins.txt", mode='r') as logins:
+                                                                  if cardNumberEntry.get() not in logins.read():
+                                                                        if len(cardNumberEntry.get()) == 8 and cardNumberEntry.get()[0] + cardNumberEntry.get()[1] + cardNumberEntry.get()[2] == "SIP" and (cardNumberEntry.get()[3] + cardNumberEntry.get()[4] + cardNumberEntry.get()[5] + cardNumberEntry.get()[6] + cardNumberEntry.get()[7]).isnumeric():
+                                                                              with open("customerLogins.txt", mode='a') as loginDatabase:
+                                                                                    loginDatabase.write(nameEntry.get() + ";" + cardNumberEntry.get() + ";" + validFromEntry.get() + ";" + validToEntry.get() + "\n")
+                                                                                    messagebox.showinfo("Success!", "Details Saved Successfully!")
+                                                                        else:
+                                                                              messagebox.showerror("Error", "Card is in wrong format.")
+                                                                  else:
+                                                                        messagebox.showerror("Error", "This card number is in use, please generate a different one.")
+                                                      else:
+                                                          messagebox.showerror("Error", "Invalid date.")
+                                                else:
+                                                    messagebox.showerror("Error", "Please use numeric values.")
+                                          else:
+                                                messagebox.showerror("Error", "Please use the format DD/MM/YY.")
                                                 
                                     else:
                                           # Show an error if no details are entered
-                                          messagebox.showerror("Error", "One or more fields are empty. Please fill all fields.")
+                                          messagebox.showerror("Error", "One or more fields are empty. Please fill all fields. You also cannot have ';' in a name.")
+
+                              # Generates a new SIP card
+                              def generateCard():
+                                    if presenceCheck(cardNumberEntry.get()):
+                                          messagebox.showerror("Error", "Please remove text before generating a card number.")
+                                    else:
+                                          cardNumberEntry.insert(0, "SIP" + "00000")
                               
                               Awindow.destroy() # Destroy previous window
                               
                               # == Window Config == #
                               ACwindow = tk.Tk()
-                              ACwindow.geometry('1000x600')
+                              ACwindow.geometry('500x800')
                               ACwindow.configure(bg='#2C363F')
                               ACwindow.title("Carbon | Add Customer")
                               ACwindow.iconbitmap('icon.ico')
@@ -144,6 +177,27 @@ def init():
                               )
                               cardNumberEntry.grid(row=5, column=0)
                               
+                              # == Generate Button == #
+                              ACgenerateButton = tk.Button(
+                                    ACframe,
+                                    text="Generate Card",
+                                    width=24,
+                                    height=2,
+                                    bg="#E75A7C",
+                                    fg="white",
+                                    font=("Arial", 14),
+                                    borderwidth=0,
+                                    command=generateCard
+                              ).grid(row=7, column=0)
+
+                              # == Space == #
+                              ACmenuText = tk.Label(
+                                    ACframe,
+                                    text=" ",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=8, column=0)
+                              
                               # == ValidFrom Text == #
                               validFromText = tk.Label(
                                     ACframe,
@@ -151,7 +205,7 @@ def init():
                                     fg="white",
                                     bg="#2C363F",
                                     font=("Arial", 16)
-                              ).grid(row=6, column=0)
+                              ).grid(row=9, column=0)
                               
                               # == ValidFrom Entry Field == #
                               validFromEntry = tk.Entry(
@@ -162,7 +216,7 @@ def init():
                                     font=("Arial", 16),
                                     width=22
                               )
-                              validFromEntry.grid(row=7, column=0)
+                              validFromEntry.grid(row=10, column=0)
                               
                               # == ValidTo Number Text == #
                               validToText = tk.Label(
@@ -171,7 +225,7 @@ def init():
                                     fg="white",
                                     bg="#2C363F",
                                     font=("Arial", 16)
-                              ).grid(row=8, column=0)
+                              ).grid(row=11, column=0)
                               
                               # == ValidTo Entry Field == #
                               validToEntry = tk.Entry(
@@ -182,7 +236,7 @@ def init():
                                     font=("Arial", 16),
                                     width=22
                               )
-                              validToEntry.grid(row=9, column=0)
+                              validToEntry.grid(row=12, column=0)
 
                               # == Space == #
                               ACmenuText = tk.Label(
@@ -190,7 +244,7 @@ def init():
                                     text=" ",
                                     bg="#2C363F",
                                     font=("Arial", 16)
-                              ).grid(row=10, column=0)
+                              ).grid(row=13, column=0)
                               
                               # == Save Button == #
                               ACsaveButton = tk.Button(
@@ -203,7 +257,7 @@ def init():
                                     font=("Arial", 14),
                                     borderwidth=0,
                                     command=saveDetails
-                              ).grid(row=11, column=0)
+                              ).grid(row=14, column=0)
                               
                               # == Back Button == #
                               ACbackButton = tk.Button(
@@ -216,7 +270,7 @@ def init():
                                     font=("Arial", 14),
                                     borderwidth=0,
                                     command=backAdmin
-                              ).grid(row=12, column=0)
+                              ).grid(row=15, column=0)
 
                         def addBusinessMenu():
                               
@@ -245,7 +299,7 @@ def init():
                               
                               # == Window Config == #
                               ABwindow = tk.Tk()
-                              ABwindow.geometry('1000x600')
+                              ABwindow.geometry('500x800')
                               ABwindow.configure(bg='#2C363F')
                               ABwindow.title("Carbon | Add Business")
                               ABwindow.iconbitmap('icon.ico')
@@ -329,6 +383,72 @@ def init():
                                     command=backAdmin
                               ).grid(row=6, column=0)
                         
+                        def viewMenu():
+                              
+                              #[==============================================]
+                              #[              View Customer Window            ]
+                              #[==============================================]
+
+                              def backAdmin():
+                                    VCwindow.destroy() # Destroy the previous window.
+                                    adminMenu()
+                              
+                              Awindow.destroy() # Destroy previous window
+                              
+                              # == Window Config == #
+                              VCwindow = tk.Tk()
+                              VCwindow.geometry('500x800')
+                              VCwindow.configure(bg='#2C363F')
+                              VCwindow.title("Carbon | View Customer")
+                              VCwindow.iconbitmap('icon.ico')
+
+                              # == Frame Config == #
+                              VCframe = tk.Frame(
+                                    VCwindow,
+                                    relief='sunken',
+                                    bg="#2C363F"
+                              )
+                              VCframe.pack(expand= True, padx= 10, pady=20)
+
+                              # == Title Text == #
+                              VCmenuText = tk.Label(
+                                    VCframe,
+                                    text="View Customer Details",
+                                    fg="white",
+                                    bg="#2C363F",
+                                    font=("Arial", 25)
+                              ).grid(row=0, column=0)
+                              
+                              # == Space == #
+                              VCspace = tk.Label(
+                                    VCframe,
+                                    text=" ",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=1, column=0)
+                              
+                              # == TEMPLATE Text == #
+                              VCnameText = tk.Label(
+                                    VCframe,
+                                    text="Sample Text",
+                                    fg="white",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=2, column=0)
+                              
+                              # == Back Button == #
+                              VCbackButton = tk.Button(
+                                    VCframe,
+                                    text="Back",
+                                    width=24,
+                                    height=2,
+                                    bg="#E75A7C",
+                                    fg="white",
+                                    font=("Arial", 14),
+                                    borderwidth=0,
+                                    command=backAdmin
+                              ).grid(row=6, column=0)
+                        
                         #[======================================]
                         #[              Admin Window            ]
                         #[======================================]
@@ -346,7 +466,7 @@ def init():
 
                         # == Window Config == #
                         Awindow = tk.Tk()
-                        Awindow.geometry('1000x600')
+                        Awindow.geometry('500x800')
                         Awindow.configure(bg='#2C363F')
                         Awindow.title("Carbon | Admin Menu")
                         Awindow.iconbitmap('icon.ico')
@@ -402,6 +522,19 @@ def init():
                               command=addBusinessMenu,
                         ).grid(row=3, column=0)
                         
+                        # == View Customer Details Button == #
+                        viewButton = tk.Button(
+                              Aframe,
+                              text="View Customer Details",
+                              width=24,
+                              height=2,
+                              bg="#E75A7C",
+                              fg="white",
+                              font=("Arial", 14),
+                              borderwidth=0,
+                              command=viewMenu,
+                        ).grid(row=4, column=0)
+                        
                         # == Logout Button == #
                         exitButton = tk.Button(
                               Aframe,
@@ -413,7 +546,7 @@ def init():
                               font=("Arial", 14),
                               borderwidth=0,
                               command=backLogin
-                        ).grid(row=4, column=0)
+                        ).grid(row=5, column=0)
                         
 
                   #[======================================]
@@ -453,7 +586,7 @@ def init():
                   
                   # == Window Config == #
                   Lwindow = tk.Tk()
-                  Lwindow.geometry('1000x600')
+                  Lwindow.geometry('500x800')
                   Lwindow.configure(bg='#2C363F')
                   Lwindow.title("Carbon | Login")
                   Lwindow.iconbitmap('icon.ico')
@@ -564,7 +697,7 @@ def init():
             
             # == Window Config == #
             Mwindow = tk.Tk()
-            Mwindow.geometry('1000x600')
+            Mwindow.geometry('500x800')
             Mwindow.configure(bg='#2C363F')
             Mwindow.title("Carbon | Main Menu")
             Mwindow.iconbitmap('icon.ico')
