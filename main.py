@@ -21,14 +21,9 @@ from tkinter import messagebox
 
 # === [ TODO ] ===
 
-# [DONE] MORE VALIDATION CHECKS ;-;
-# [DONE] GUI For Storing Business  Details
-# [DONE] ^ Functionality For Storing Business  Details
-# [DONE] GUI For Checking Customer Details
-# - ^ Functionality To List All Customer Details
+# - Functionality For 
 # - GUI For Searching By Card Number
 # - ^ Search Customer Details (use card number and provide name, valid from and valid to + list of buissness available)
-# [DONE] On the add customer GUI, add a button to generate the card numbers
 
 def presenceCheck(args):
       if args != "":
@@ -285,12 +280,18 @@ def init():
                               def saveBDetails():
 
                                     # Check if there is content in the entry boxes
-                                    if presenceCheck(BnameEntry.get()):
+                                    if presenceCheck(BnameEntry.get()) and presenceCheck(DiscountEntry.get()) and presenceCheck(FreeDelEntry.get()) and presenceCheck(TwoForOneEntry.get()):
                                           
                                           with open("businessDetails.txt", mode='a') as nameDatabase: # Open the file
-                                                nameDatabase.write(BnameEntry.get() + "\n")
-                                                messagebox.showinfo("Success!", "Details Saved Successfully!")
-                                                
+                                                if (len(BnameEntry.get()) <= 48 and ";" not in BnameEntry.get()): # Length + char check
+                                                    if (len(DiscountEntry.get()) == 1 and DiscountEntry.get().isnumeric()): # Length + numeric check
+                                                        nameDatabase.write(BnameEntry.get() + ";" + DiscountEntry.get() + ";" + FreeDelEntry.get() + ";" + TwoForOneEntry.get() + "\n")
+                                                        messagebox.showinfo("Success!", "Details Saved Successfully!")
+                                                    else:
+                                                        messagebox.showerror("Error", "Discount day must be a number between 1 and 7")
+                                                else:
+                                                    messagebox.showerror("Error", "Name must be less than 48 characters and not include ';'")
+                                          
                                     else:
                                           # Show an error if no details are entered
                                           messagebox.showerror("Error", "One or more fields are empty. Please fill all fields.")
@@ -348,6 +349,66 @@ def init():
                                     width=22
                               )
                               BnameEntry.grid(row=3, column=0)
+                              
+                              # == Discount Day Text == #
+                              DiscountText = tk.Label(
+                                    ABframe,
+                                    text="Discount Day 1-7",
+                                    fg="white",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=4, column=0)
+                              
+                              # == Discount Day Entry Field == #
+                              DiscountEntry = tk.Entry(
+                                    ABframe,
+                                    fg="white",
+                                    bg="#F3ADBE",
+                                    relief="flat",
+                                    font=("Arial", 16),
+                                    width=22
+                              )
+                              DiscountEntry.grid(row=5, column=0)
+                              
+                              # == Free Deliveries Text == #
+                              FreeDelText = tk.Label(
+                                    ABframe,
+                                    text="Free Deliveries Y/N",
+                                    fg="white",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=6, column=0)
+                              
+                              # == Free Deliveries Entry Field == #
+                              FreeDelEntry = tk.Entry(
+                                    ABframe,
+                                    fg="white",
+                                    bg="#F3ADBE",
+                                    relief="flat",
+                                    font=("Arial", 16),
+                                    width=22
+                              )
+                              FreeDelEntry.grid(row=7, column=0)
+                              
+                              # == 2 For 1 Product Text == #
+                              TwoForOneText = tk.Label(
+                                    ABframe,
+                                    text="2-For-1 Product",
+                                    fg="white",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=8, column=0)
+                              
+                              # == 2 For 1 Product Entry Field == #
+                              TwoForOneEntry = tk.Entry(
+                                    ABframe,
+                                    fg="white",
+                                    bg="#F3ADBE",
+                                    relief="flat",
+                                    font=("Arial", 16),
+                                    width=22
+                              )
+                              TwoForOneEntry.grid(row=9, column=0)
 
                               # == Space == #
                               ABmenuText = tk.Label(
@@ -355,7 +416,7 @@ def init():
                                     text=" ",
                                     bg="#2C363F",
                                     font=("Arial", 16)
-                              ).grid(row=4, column=0)
+                              ).grid(row=10, column=0)
                               
                               # == Save Button == #
                               ABsaveButton = tk.Button(
@@ -368,7 +429,7 @@ def init():
                                     font=("Arial", 14),
                                     borderwidth=0,
                                     command=saveBDetails
-                              ).grid(row=5, column=0)
+                              ).grid(row=11, column=0)
                               
                               # == Back Button == #
                               ABbackButton = tk.Button(
@@ -381,7 +442,7 @@ def init():
                                     font=("Arial", 14),
                                     borderwidth=0,
                                     command=backAdmin
-                              ).grid(row=6, column=0)
+                              ).grid(row=12, column=0)
                         
                         def viewMenu():
                               
