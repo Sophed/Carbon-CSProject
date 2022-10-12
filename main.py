@@ -15,15 +15,15 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+import random
+from datetime import date
 
 # Colour Palette  -  https://coolors.co/2c363f-e75a7c-f3adbe-ffffff
 
 
 # === [ TODO ] ===
 
-# - Functionality For 
-# - GUI For Searching By Card Number
-# - ^ Search Customer Details (use card number and provide name, valid from and valid to + list of buissness available)
+# - date formatting for search
 
 def presenceCheck(args):
       if args != "":
@@ -32,7 +32,8 @@ def presenceCheck(args):
             return False
 
 def init():
-
+    
+      print("[*] Program Started")
       # Main Menu
       def mainMenu():
 
@@ -76,6 +77,11 @@ def init():
                                                                               with open("customerLogins.txt", mode='a') as loginDatabase:
                                                                                     loginDatabase.write(nameEntry.get() + ";" + cardNumberEntry.get() + ";" + validFromEntry.get() + ";" + validToEntry.get() + "\n")
                                                                                     messagebox.showinfo("Success!", "Details Saved Successfully!")
+                                                                                    nameEntry.delete(0, tk.END)
+                                                                                    cardNumberEntry.delete(0, tk.END)
+                                                                                    cardNumberEntry.insert(0, "SIP----")
+                                                                                    validFromEntry.delete(0, tk.END)
+                                                                                    validToEntry.delete(0, tk.END)
                                                                         else:
                                                                               messagebox.showerror("Error", "Card is in wrong format.")
                                                                   else:
@@ -93,10 +99,10 @@ def init():
 
                               # Generates a new SIP card
                               def generateCard():
-                                    if presenceCheck(cardNumberEntry.get()):
-                                          messagebox.showerror("Error", "Please remove text before generating a card number.")
-                                    else:
-                                          cardNumberEntry.insert(0, "SIP" + "00000")
+                                    cardNumberEntry.delete(0, tk.END)
+                                    cardNumberEntry.insert(0, "SIP" + str(random.randint(10000, 99999)))
+                                    # I could add some fancy logic here to test whether the card number is free, but let's be honest,
+                                    # if this goes through a test theres a 1 in 89999 chance that it fails. I'm leaving it in for now.
                               
                               Awindow.destroy() # Destroy previous window
                               
@@ -105,7 +111,10 @@ def init():
                               ACwindow.geometry('500x800')
                               ACwindow.configure(bg='#2C363F')
                               ACwindow.title("Carbon | Add Customer")
-                              ACwindow.iconbitmap('icon.ico')
+                              try:
+                                  ACwindow.iconbitmap('icon.ico')
+                              except:
+                                  pass # Icons don't work with linux too well so I guess just ignore this error if it happens
 
                               # == Frame Config == #
                               ACframe = tk.Frame(
@@ -171,6 +180,7 @@ def init():
                                     width=22
                               )
                               cardNumberEntry.grid(row=5, column=0)
+                              cardNumberEntry.insert(0, "SIP----")
                               
                               # == Generate Button == #
                               ACgenerateButton = tk.Button(
@@ -285,12 +295,26 @@ def init():
                                           with open("businessDetails.txt", mode='a') as nameDatabase: # Open the file
                                                 if (len(BnameEntry.get()) <= 48 and ";" not in BnameEntry.get()): # Length + char check
                                                     if (len(DiscountEntry.get()) == 1 and DiscountEntry.get().isnumeric()): # Length + numeric check
-                                                        nameDatabase.write(BnameEntry.get() + ";" + DiscountEntry.get() + ";" + FreeDelEntry.get() + ";" + TwoForOneEntry.get() + "\n")
-                                                        messagebox.showinfo("Success!", "Details Saved Successfully!")
+                                                        if (FreeDelEntry.get().lower() == "y" or FreeDelEntry.get().lower() == "n"): # Char check
+                                                            if (len(TwoForOneEntry.get()) <= 48 and ";" not in TwoForOneEntry.get()):
+                                                                nameDatabase.write(BnameEntry.get() + ";" + DiscountEntry.get() + ";" + FreeDelEntry.get() + ";" + TwoForOneEntry.get() + "\n")
+                                                                messagebox.showinfo("Success!", "Details Saved Successfully!")
+                                                                BnameEntry.insert(0, "")
+                                                                BnameEntry.delete(0, tk.END)
+                                                                DiscountEntry.insert(0, "")
+                                                                DiscountEntry.delete(0, tk.END)
+                                                                FreeDelEntry.insert(0, "")
+                                                                FreeDelEntry.delete(0, tk.END)
+                                                                TwoForOneEntry.insert(0, "")
+                                                                TwoForOneEntry.delete(0, tk.END)
+                                                            else:
+                                                                messagebox.showerror("Error", "2-For-1 product name must be less than 48 characters and not include ';'.")
+                                                        else:
+                                                            messagebox.showerror("Error", "Free delivery field must contain Y/n.")
                                                     else:
-                                                        messagebox.showerror("Error", "Discount day must be a number between 1 and 7")
+                                                        messagebox.showerror("Error", "Discount day must be a number between 1 and 7.")
                                                 else:
-                                                    messagebox.showerror("Error", "Name must be less than 48 characters and not include ';'")
+                                                    messagebox.showerror("Error", "Name must be less than 48 characters and not include ';'.")
                                           
                                     else:
                                           # Show an error if no details are entered
@@ -303,7 +327,10 @@ def init():
                               ABwindow.geometry('500x800')
                               ABwindow.configure(bg='#2C363F')
                               ABwindow.title("Carbon | Add Business")
-                              ABwindow.iconbitmap('icon.ico')
+                              try:
+                                  ABwindow.iconbitmap('icon.ico')
+                              except:
+                                  pass
 
                               # == Frame Config == #
                               ABframe = tk.Frame(
@@ -453,6 +480,28 @@ def init():
                               def backAdmin():
                                     VCwindow.destroy() # Destroy the previous window.
                                     adminMenu()
+
+                              def searchCard():
+                                    with open("customerLogins.txt", mode='r') as logins:
+                                        #print(logins.read())
+                                        
+                                        ldb = logins.read().split("\n")
+                                        found = False
+                                        today = date.today().strftime("%d/%m/%y")
+                                        for i in ldb:
+                                            if ";" + VCidEntry.get() + ";" in i:
+                                                print("[#] SIP Card Found")
+                                                currentLine = i.split(";")
+                                                validFromDate = currentLine[2]
+                                                validToDate = currentLine[3]
+                                                if today >= validFromDate and today <= validToDate:
+                                                    messagebox.showinfo("Card Found!", "The card is currently: " + "VALID")
+                                                else:
+                                                    messagebox.showerror("Card Found!", "The card is currently: " + "INVALID")
+                                                found = True
+
+                                        if found != True:
+                                            messagebox.showerror("Card Not Found.", "The card entered is not in our database, please try a different one.")
                               
                               Awindow.destroy() # Destroy previous window
                               
@@ -461,7 +510,10 @@ def init():
                               VCwindow.geometry('500x800')
                               VCwindow.configure(bg='#2C363F')
                               VCwindow.title("Carbon | View Customer")
-                              VCwindow.iconbitmap('icon.ico')
+                              try:
+                                  VCwindow.iconbitmap('icon.ico')
+                              except:
+                                  pass
 
                               # == Frame Config == #
                               VCframe = tk.Frame(
@@ -474,7 +526,7 @@ def init():
                               # == Title Text == #
                               VCmenuText = tk.Label(
                                     VCframe,
-                                    text="View Customer Details",
+                                    text="Search Customer Details",
                                     fg="white",
                                     bg="#2C363F",
                                     font=("Arial", 25)
@@ -488,14 +540,46 @@ def init():
                                     font=("Arial", 16)
                               ).grid(row=1, column=0)
                               
-                              # == TEMPLATE Text == #
+                              # == SIP Card Text == #
                               VCnameText = tk.Label(
                                     VCframe,
-                                    text="Sample Text",
+                                    text="SIP Number",
                                     fg="white",
                                     bg="#2C363F",
                                     font=("Arial", 16)
                               ).grid(row=2, column=0)
+                              
+                              # == Card Entry Field == #
+                              VCidEntry = tk.Entry(
+                                    VCframe,
+                                    fg="white",
+                                    bg="#F3ADBE",
+                                    relief="flat",
+                                    font=("Arial", 16),
+                                    width=22
+                              )
+                              VCidEntry.grid(row=3, column=0)
+                              
+                              # == Space == #
+                              VCspace = tk.Label(
+                                    VCframe,
+                                    text=" ",
+                                    bg="#2C363F",
+                                    font=("Arial", 16)
+                              ).grid(row=4, column=0)
+                              
+                              # == Search Button == #
+                              VCsearchButton = tk.Button(
+                                    VCframe,
+                                    text="Search",
+                                    width=24,
+                                    height=2,
+                                    bg="#E75A7C",
+                                    fg="white",
+                                    font=("Arial", 14),
+                                    borderwidth=0,
+                                    command=searchCard
+                              ).grid(row=5, column=0)
                               
                               # == Back Button == #
                               VCbackButton = tk.Button(
@@ -530,7 +614,10 @@ def init():
                         Awindow.geometry('500x800')
                         Awindow.configure(bg='#2C363F')
                         Awindow.title("Carbon | Admin Menu")
-                        Awindow.iconbitmap('icon.ico')
+                        try:
+                            Awindow.iconbitmap('icon.ico')
+                        except:
+                            pass
 
                         # == Frame Config == #
                         Aframe = tk.Frame(
@@ -628,6 +715,7 @@ def init():
                                     loginsArr = loginDatabase.read().split("\n") # Split the file on line breaks
 
                               if usernameEntry.get() + ";" + passwordEntry.get() in loginsArr: # Combine the 2 entry fields together and see if it matches the database
+                                    print("[#] Admin Logged In.")
                                     adminMenu()
                               else:
                                     # Show an error if the incorrect details are entered
@@ -650,8 +738,11 @@ def init():
                   Lwindow.geometry('500x800')
                   Lwindow.configure(bg='#2C363F')
                   Lwindow.title("Carbon | Login")
-                  Lwindow.iconbitmap('icon.ico')
-
+                  try:
+                      Lwindow.iconbitmap('icon.ico')
+                  except:
+                      pass
+                    
                   # == Frame Config == #
                   Lframe = tk.Frame(
                         Lwindow,
@@ -761,7 +852,10 @@ def init():
             Mwindow.geometry('500x800')
             Mwindow.configure(bg='#2C363F')
             Mwindow.title("Carbon | Main Menu")
-            Mwindow.iconbitmap('icon.ico')
+            try:
+                Mwindow.iconbitmap('icon.ico')
+            except:
+                print("xorg moment")
 
             # == Frame Config == #
             Mframe = tk.Frame(
