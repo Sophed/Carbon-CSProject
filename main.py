@@ -483,7 +483,6 @@ def init():
 
                               def searchCard():
                                     with open("customerLogins.txt", mode='r') as logins:
-                                        #print(logins.read())
                                         
                                         ldb = logins.read().split("\n")
                                         found = False
@@ -491,13 +490,7 @@ def init():
                                         for i in ldb:
                                             if ";" + VCidEntry.get() + ";" in i:
                                                 print("[#] SIP Card Found")
-                                                currentLine = i.split(";")
-                                                validFromDate = currentLine[2]
-                                                validToDate = currentLine[3]
-                                                if today >= validFromDate and today <= validToDate:
-                                                    messagebox.showinfo("Card Found!", "The card is currently: " + "VALID")
-                                                else:
-                                                    messagebox.showerror("Card Found!", "The card is currently: " + "INVALID")
+                                                messagebox.showinfo("Card Found!", "The card is currently: " + "VALID")
                                                 found = True
 
                                         if found != True:
